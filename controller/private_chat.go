@@ -8,6 +8,8 @@ import (
 )
 
 func (bot *BotEnvironment) PrivateChatEvents(botId int64, packet *OPQBot.FriendMsgPack) {
+	logrus.Info("Receive [ %s ] from [ %d ]", packet.Content, packet.FromUin)
+
 	var cmd string
 	if !utils.IsIroCommand(packet.Content) {
 		return
@@ -17,7 +19,6 @@ func (bot *BotEnvironment) PrivateChatEvents(botId int64, packet *OPQBot.FriendM
 
 	// Ping.
 	if cmd == "Ping!" {
-		logrus.Info("Receive [ %s ] from [ %d ]", cmd, packet.FromUin)
 		bot.Manager.Send(OPQBot.SendMsgPack{
 			SendToType: OPQBot.SendToTypeFriend,
 			ToUserUid:  packet.FromUin,
