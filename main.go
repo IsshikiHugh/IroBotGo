@@ -9,7 +9,7 @@ import (
 
 func Init() {
 	// Initialize the config files.
-	config.Init("config.yaml")
+	config.Init("./config.yaml")
 }
 
 func main() {
