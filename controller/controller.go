@@ -33,6 +33,7 @@ func PowerBot() error {
 
 	bot.regEvent()
 
+	bot.Manager.Wait()
 	defer bot.Manager.Stop()
 	return nil
 }
