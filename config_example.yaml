@@ -1,4 +1,5 @@
-Account:
-
-
-Server:
+Basic:
+  AccountId: 1145141919810 # QQ 号
+  ServerUrl: http://127.0.0.1:8888 # OPQ 后端 url
+  MaxRetry: 3 # 连接重复次数
+  CommandKey: "Iro!" # 机器人关键词前缀
