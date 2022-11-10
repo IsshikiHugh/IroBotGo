@@ -3,6 +3,7 @@ package controller
 import (
 	"IroBot/config"
 	"IroBot/model"
+	"fmt"
 
 	"github.com/mcoo/OPQBot"
 	"github.com/sirupsen/logrus"
@@ -23,7 +24,6 @@ func PowerBot() error {
 	if err != nil {
 		return err
 	}
-
 	bot.Manager = OPQBot.NewBotManager(bot.Conf.Basic.Qid, bot.Conf.Basic.Url)
 	bot.Manager.SetMaxRetryCount(bot.Conf.Basic.Retry)
 	err = bot.Manager.Start()
@@ -41,12 +41,12 @@ func PowerBot() error {
 func (bot *BotEnvironment) regEvent() {
 	_, err := bot.Manager.AddEvent(OPQBot.EventNameOnFriendMessage, bot.PrivateChatEvents)
 	if err != nil {
-		logrus.Error("Add private chat events failed with error messages: [ %s ]", err.Error())
+		logrus.Error(fmt.Sprintf("Add private chat events failed with error messages: [ %s ]", err.Error()))
 	}
 
-	_, err = bot.Manager.AddEvent(OPQBot.EventNameOnFriendMessage, bot.GroupChatEvents)
+	_, err = bot.Manager.AddEvent(OPQBot.EventNameOnGroupMessage, bot.GroupChatEvents)
 	if err != nil {
-		logrus.Error("Add group chat events failed with error messages: [ %s ]", err.Error())
+		logrus.Error(fmt.Sprintf("Add group chat events failed with error messages: [ %s ]", err.Error()))
 	}
 
 }

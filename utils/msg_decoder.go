@@ -20,5 +20,5 @@ func DecodeIroCommand(msg string) (string, error) {
 	if !IsIroCommand(msg) {
 		return "", errors.New("is not a command")
 	}
-	return strings.TrimPrefix(msg, config.Config().Basic.Key+" "), nil
+	return strings.TrimSpace(strings.TrimPrefix(msg, config.Config().Basic.Key)), nil
 }

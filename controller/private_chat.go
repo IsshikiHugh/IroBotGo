@@ -2,13 +2,14 @@ package controller
 
 import (
 	"IroBot/utils"
+	"fmt"
 
 	"github.com/mcoo/OPQBot"
 	"github.com/sirupsen/logrus"
 )
 
 func (bot *BotEnvironment) PrivateChatEvents(botId int64, packet *OPQBot.FriendMsgPack) {
-	logrus.Info("Receive [ %s ] from [ %d ]", packet.Content, packet.FromUin)
+	logrus.Info(fmt.Sprintf("Receive [ %s ] from [ %d ]", packet.Content, packet.FromUin))
 
 	var cmd string
 	if !utils.IsIroCommand(packet.Content) {

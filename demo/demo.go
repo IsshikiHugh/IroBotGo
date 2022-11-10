@@ -1,4 +1,4 @@
-package demo
+package main
 
 import (
 	"encoding/base64"
@@ -31,30 +31,10 @@ func main() {
 	}
 	defer opqBot.Stop()
 
-	//log.Println(opqBot.RegMiddleware(1, func(m map[string]interface{}) map[string]interface{} {
-	//	//m["Content"] = "测试"
-	//	m = map[string]interface{}{"reason": "消息违规"}
-	//	return m
-	//}))
-	//ck, _ := opqBot.GetUserCookie()
-	//qz := qzone.NewQzoneManager(opqBot.QQ, ck)
-	//f, _ := ioutil.ReadFile("./head.PNG")
-	//u, _ := qz.UploadPic(base64.StdEncoding.EncodeToString(f))
-	//bo, rich, _ := qzone.GetPicBoAndRichVal(u)
-	//log.Println(qz.SendShuoShuoWithPic("发送图文测试", bo, rich))
-	//lists,_ :=qz.GetShuoShuoList()
-	//infoReg,_ := regexp.Compile(`<div class="f-info">(.*?)</div>`)
-	//for _,v := range lists.Data.Data {
-	//	if m := infoReg.FindStringSubmatch(v["html"].(string));len(m) == 2 {
-	//		log.Println(m[1])
-	//	}
-	//}
-	//qz.SendShuoShuo("发送文字测试")
-	//log.Println(infoReg.FindStringSubmatch(lists.Data.Data[0]["html"].(string))[1])
-
-	//log.Println(ck.PSkey.Qzone)
 	var cancel func()
 	cancel, err = opqBot.AddEvent(OPQBot.EventNameOnGroupMessage, VerifyBlackList, func(botQQ int64, packet *OPQBot.GroupMsgPack) {
+		fmt.Println(packet.Content)
+		
 		if packet.FromUserID != opqBot.QQ {
 			s := opqBot.Session.SessionStart(packet.FromUserID)
 			//last, _ := s.GetString("last")
@@ -130,25 +110,6 @@ func main() {
 				})
 			}
 			if packet.Content == "#赞我" {
-				i, ok := ZanNote[packet.FromUserID]
-				if ok {
-					if i == time.Now().Day() {
-						opqBot.Send(OPQBot.SendMsgPack{
-							SendToType: OPQBot.SendToTypeGroup,
-							ToUserUid:  packet.FromGroupID,
-							Content:    OPQBot.SendTypeTextMsgContent{Content: "今日已赞!"},
-							CallbackFunc: func(Code int, Info string, record OPQBot.MyRecord) {
-								log.Println(record)
-								if Code == 0 {
-									log.Println("发送成功")
-								} else {
-									log.Println("发送失败 错误代码", Code, Info)
-								}
-							},
-						})
-						return
-					}
-				}
 				opqBot.Send(OPQBot.SendMsgPack{
 					SendToType: OPQBot.SendToTypeGroup,
 					ToUserUid:  packet.FromGroupID,
