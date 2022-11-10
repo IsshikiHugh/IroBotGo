@@ -4,16 +4,20 @@ import (
 	"IroBot/utils"
 
 	"github.com/mcoo/OPQBot"
+	"github.com/sirupsen/logrus"
 )
 
 func (bot *BotEnvironment) PrivateChatEvents(botId int64, packet *OPQBot.FriendMsgPack) {
-	// If not a command.
-	if packet.MsgType != "TextMsg" || !utils.IsIroCommand(packet.Content) {
+	var cmd string
+	if !utils.IsIroCommand(packet.Content) {
 		return
+	} else {
+		cmd, _ = utils.DecodeIroCommand(packet.Content)
 	}
 
 	// Ping.
-	if packet.Content == "/Iro Ping?" {
+	if cmd == "Ping!" {
+		logrus.Info("Receive [ %s ] from [ %d ]", cmd, packet.FromUin)
 		bot.Manager.Send(OPQBot.SendMsgPack{
 			SendToType: OPQBot.SendToTypeFriend,
 			ToUserUid:  packet.FromUin,
