@@ -75,7 +75,10 @@ func main() {
 				opqBot.Send(OPQBot.SendMsgPack{
 					SendToType: OPQBot.SendToTypeGroup,
 					ToUserUid:  packet.FromGroupID,
-					Content:    OPQBot.SendTypePicMsgByBase64Content{Content: "图片", Base64: base64.StdEncoding.EncodeToString(pic)},
+					Content:    OPQBot.SendTypePicMsgByBase64Content{
+						Content: "图片", 
+						Base64: base64.StdEncoding.EncodeToString(pic),
+					},
 				})
 				return
 			}
