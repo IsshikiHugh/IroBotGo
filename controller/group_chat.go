@@ -100,7 +100,8 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 				if len(argvs) >= 1 && len(argvs[0]) > 0 {
 					pl = argvs[0]
 				}
-				cmd = strings.TrimPrefix(cmd, cmd)
+				cmd = strings.TrimPrefix(cmd, pl)
+				cmd = strings.TrimPrefix(cmd, "]\n")
 			}
 			logrus.Info(fmt.Sprintf("Try to past code in [ %s ]!", pl))
 			code := cmd
