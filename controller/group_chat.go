@@ -13,7 +13,6 @@ import (
 )
 
 func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgPack) {
-	logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
 
 	// Ignore message if the sender is the bot.
 	if packet.FromUserID == bot.Conf.Basic.Qid {
@@ -32,6 +31,8 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 		} else {
 			cmd, _ = utils.DecodeIroCommand(packet.Content)
 		}
+
+		logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
 
 		// Echo
 		if strings.HasPrefix(cmd, "Echo") {
@@ -84,7 +85,7 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 				SendToType: OPQBot.SendToTypeGroup,
 				ToUserUid:  packet.FromGroupID,
 				Content: OPQBot.SendTypeTextMsgContent{
-					Content: msg,
+					Content: "🌈 " + msg,
 				},
 			})
 			return
@@ -101,7 +102,8 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 					pl = argvs[0]
 				}
 				cmd = strings.TrimPrefix(cmd, pl)
-				cmd = strings.TrimPrefix(cmd, "]\n")
+				cmd = strings.TrimPrefix(cmd, "]")
+				cmd = strings.TrimPrefix(cmd, "\n")
 			}
 			logrus.Info(fmt.Sprintf("Try to past code in [ %s ]!", pl))
 			code := cmd
@@ -111,7 +113,7 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 					SendToType: OPQBot.SendToTypeGroup,
 					ToUserUid:  packet.FromGroupID,
 					Content: OPQBot.SendTypeTextMsgContent{
-						Content: "😫 粘贴代码时发生错误！",
+						Content: "😖 粘贴代码时发生错误！",
 					},
 				})
 				return
@@ -122,7 +124,7 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 					SendToType: OPQBot.SendToTypeGroup,
 					ToUserUid:  packet.FromGroupID,
 					Content: OPQBot.SendTypeTextMsgContent{
-						Content: "📋 " + url + "\n😫 预览生成错误。",
+						Content: "📋 " + url + "\n😖 预览生成错误。",
 					},
 				})
 				return
@@ -148,5 +150,6 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 			cmd, _ = utils.DecodeIroCommand(reply.Content)
 		}
 		_ = cmd
+		logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
 	}
 }
