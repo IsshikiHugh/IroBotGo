@@ -20,6 +20,8 @@ func Init(filename string) {
 		logrus.Fatal("Config initialization failed while unmarshal yaml file.")
 	}
 	localConfig.Basic.Qid, _ = strconv.ParseInt(localConfig.Basic.QidStr, 10, 64)
+	localConfig.Basic.MQid, _ = strconv.ParseInt(localConfig.Basic.MQidStr, 10, 64)
+	logrus.Info("Set configs done!", localConfig)
 }
 
 func Config() *model.Configuration {
