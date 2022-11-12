@@ -44,7 +44,7 @@ func PasteCode(pl string, code string) (string, error) {
 
 func Preview(url string) ([]byte, error) {
 	var buf []byte
-	ctx, cancel := crawler.NewCtx()
+	ctx, cancel := crawler.NewCtxWithSize(480, 4800)
 	defer cancel()
 
 	err := chromedp.Run(ctx, chromedp.Tasks{
