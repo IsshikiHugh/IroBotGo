@@ -2,13 +2,13 @@ package controller
 
 import (
 	"IroBot/utils"
+	cTypeExplainer "IroBot/utils/c_type_explainer"
 	codeBin "IroBot/utils/code_bin"
 	"encoding/base64"
 	"fmt"
 	"strings"
 
 	"github.com/mcoo/OPQBot"
-	"github.com/mcoo/requests"
 	"github.com/sirupsen/logrus"
 )
 
@@ -34,21 +34,8 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 
 		logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
 
-		// Echo
-		if strings.HasPrefix(cmd, "Echo") {
-			msg := strings.TrimSpace(strings.TrimPrefix(cmd, "Echo"))
-			bot.Manager.Send(OPQBot.SendMsgPack{
-				SendToType: OPQBot.SendToTypeGroup,
-				ToUserUid:  packet.FromGroupID,
-				Content: OPQBot.SendTypeTextMsgContent{
-					Content: msg,
-				},
-			})
-			return
-		}
-
 		// Say
-		if strings.HasPrefix(cmd, "Say") {
+		if strings.HasPrefix(cmd, "say") {
 			msg := strings.TrimSpace(strings.TrimPrefix(cmd, "Say"))
 			if packet.FromUserID != bot.Conf.Basic.MQid {
 				msg = "可恶的 「" + packet.FromNickName + "」 强迫可怜的 IroBot 说 「" + msg + "」"
@@ -60,32 +47,6 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 				ToUserUid:  packet.FromGroupID,
 				Content: OPQBot.SendTypeTextMsgContent{
 					Content: msg,
-				},
-			})
-			return
-		}
-
-		// 彩虹屁
-		if strings.HasPrefix(cmd, "彩虹屁") {
-			msg := ""
-			if res, err := requests.Get("https://api.shadiao.pro/chp"); err != nil {
-				msg = "😖 放不出来了"
-			} else {
-				chp := struct {
-					Data struct {
-						Type string `json:"type"`
-						Text string `json:"text"`
-					} `json:"data"`
-				}{}
-				res.Json(&chp)
-				msg = chp.Data.Text
-			}
-
-			bot.Manager.Send(OPQBot.SendMsgPack{
-				SendToType: OPQBot.SendToTypeGroup,
-				ToUserUid:  packet.FromGroupID,
-				Content: OPQBot.SendTypeTextMsgContent{
-					Content: "🌈 " + msg,
 				},
 			})
 			return
@@ -109,6 +70,7 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 			code := cmd
 			url, err := codeBin.PasteCode(pl, code)
 			if err != nil {
+				logrus.Error("Error happens when paste code: ", err)
 				bot.Manager.Send(OPQBot.SendMsgPack{
 					SendToType: OPQBot.SendToTypeGroup,
 					ToUserUid:  packet.FromGroupID,
@@ -120,6 +82,7 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 			}
 			img, err := codeBin.Preview(url)
 			if err != nil {
+				logrus.Error("Error happens when preview code: ", err)
 				bot.Manager.Send(OPQBot.SendMsgPack{
 					SendToType: OPQBot.SendToTypeGroup,
 					ToUserUid:  packet.FromGroupID,
@@ -138,6 +101,29 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 				},
 			})
 			return
+		}
+
+		// C 类型解释
+		if strings.HasPrefix(cmd, "whatis ") {
+			cmd = strings.TrimPrefix(cmd, "whatis ")
+			msg, err := cTypeExplainer.Explain(cmd)
+			if err != nil {
+				if err.Error() != "invalid syntax" {
+					logrus.Error("Error happens when explain sentence: ", err)
+					msg = "😖 一时语塞。"
+				} else {
+					msg = "🤔 看起来这句话并不合法。"
+				}
+			} else {
+				msg = "「" + cmd + "」" + msg
+			}
+			bot.Manager.Send(OPQBot.SendMsgPack{
+				SendToType: OPQBot.SendToTypeGroup,
+				ToUserUid:  packet.FromGroupID,
+				Content: OPQBot.SendTypeTextMsgContent{
+					Content: msg,
+				},
+			})
 		}
 	} else {
 		logrus.Info("A reply.")

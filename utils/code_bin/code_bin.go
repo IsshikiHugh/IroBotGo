@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/chromedp/chromedp"
-	"github.com/sirupsen/logrus"
 )
 
 var binPasteUrl string = "http://pastie.org/pastes/create"
@@ -31,7 +30,7 @@ func PasteCode(pl string, code string) (string, error) {
 	resp, err := client.PostForm(binPasteUrl, forms)
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	logrus.Info(string(body))
+	// logrus.Info(string(body))
 	suffix := strings.TrimLeft(string(body), "Found. Redirecting to")
 	if err != nil {
 		return "", err
