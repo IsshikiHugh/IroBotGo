@@ -39,6 +39,7 @@ func (bot *BotEnvironment) GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgP
 			msg := strings.TrimSpace(strings.TrimPrefix(cmd, "say"))
 			if packet.FromUserID != bot.Conf.Basic.MQid {
 				msg = "可恶的 「" + packet.FromNickName + "」 强迫可怜的 IroBot 说 「" + msg + "」"
+				msg = "🥺 不要！"
 			} else {
 				msg = "🥰 IroBot 也想说 「" + msg + "」"
 			}
