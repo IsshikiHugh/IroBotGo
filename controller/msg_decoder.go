@@ -39,12 +39,43 @@ func decodeIroCommand(msg string) (string, error) {
  * @param msg: The message to be parsed.
  * @return model.Instruction: The parsed instruction.
  */
-func Parse(msg string) (model.Instruction, error) {
+func ParseWithPrefix(msg string) (model.Instruction, error) {
 	msg, err := decodeIroCommand(msg)
 	if err != nil {
 		return model.Instruction{}, err
 	}
 
+	return ParseWithoutPrefix(msg)
+}
+
+/*
+ * @brief Check at prefix and remove it if can.
+ * @param msg: The message to check.
+ * @return string: The message without prefix.
+ */
+func decodeAtCommand(msg string) (string, error) {
+	return strings.ReplaceAll(msg, "@IroBot", ""), nil
+}
+
+/*
+ * @brief Parse the message to a command.
+ * @param msg: The message to be parsed.
+ * @return model.Instruction: The parsed instruction.
+ */
+func ParseAtMsg(msg string) (model.Instruction, error) {
+	msg, err := decodeAtCommand(msg)
+	if err != nil {
+		return model.Instruction{}, err
+	}
+	return ParseWithoutPrefix(msg)
+}
+
+/*
+ * @brief Parse the message to a command.
+ * @param msg: The message to be parsed.
+ * @return model.Instruction: The parsed instruction.
+ */
+func ParseWithoutPrefix(msg string) (model.Instruction, error) {
 	ret := model.Instruction{}
 
 	msg = strings.TrimLeft(msg, " ")
@@ -66,8 +97,10 @@ func Parse(msg string) (model.Instruction, error) {
 		}
 	}
 	content := strings.TrimPrefix(msg, cmdWithArgs)
-	content = strings.TrimPrefix(content, " ")
-	content = strings.TrimPrefix(content, "\n")
+	for len(content) > 0 && (content[0] == ' ' || content[0] == '\n') {
+		content = strings.TrimPrefix(content, " ")
+		content = strings.TrimPrefix(content, "\n")
+	}
 	ret.Content = content
 	return ret, nil
 }

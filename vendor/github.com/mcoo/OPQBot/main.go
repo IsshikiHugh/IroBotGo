@@ -1011,6 +1011,7 @@ func MacroAt(qqs []int64) string {
 	}
 	return "[ATUSER(" + strings.Join(qqsStr, ",") + ")]"
 }
+
 func MacroAtAll() string {
 	return "[ATALL()]"
 }

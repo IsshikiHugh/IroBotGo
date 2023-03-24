@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"IroBot/model"
 	"IroBot/units/emojiHelper"
 	"IroBot/units/languageHelper"
 	"IroBot/units/programerHelper"
@@ -8,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/mcoo/OPQBot"
-	"github.com/sirupsen/logrus"
 )
 
 func GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgPack) {
@@ -17,30 +17,37 @@ func GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgPack) {
 		return
 	}
 
-	reply, err := OPQBot.ParserGroupReplyMsg(*packet)
-	// That is, not a reply.
-	if err != nil {
-		logrus.Info("Not a reply.")
-
+	if true {
 		// Pretreatment
-		inst, err := Parse(packet.Content)
-		cmd := inst.Content
+		var (
+			inst model.Instruction
+			err  error
+		)
+
+		if packet.MsgType == "AtMsg" {
+			atMsg, _ := OPQBot.ParserGroupAtMsg(*packet)
+			inst, err = ParseAtMsg(atMsg.Content)
+
+		} else {
+			inst, err = ParseWithPrefix(packet.Content)
+		}
 		if err != nil {
 			return
 		}
-		logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
+		// logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
 
 		// Choose the option
 		switch inst.OptionName {
 		case "menu":
 			msg := fmt.Sprintf("🥰 你好！我是 IroBot！目前我支持这些功能！\n")
-			msg += fmt.Sprintf("🔑「%s menu 」\n      👉 查看帮助手册；\n", Bot.Conf.Basic.Key)
-			msg += fmt.Sprintf("🔑「%s whatis <declaration> 」\n      👉 C* 语言类型解释；\n", Bot.Conf.Basic.Key)
-			msg += fmt.Sprintf("🔑「%s trans[<lang>] <sentence> 」\n      👉 翻译为某种语言；\n", Bot.Conf.Basic.Key)
-			msg += fmt.Sprintf("🔑「%s trans-help 」\n      👉 查看有哪些语言可以翻译；\n", Bot.Conf.Basic.Key)
-			msg += fmt.Sprintf("🔑「%s mix <emoji>+<emoji> 」\n      👉 合成两个 emoji；\n", Bot.Conf.Basic.Key)
-			msg += fmt.Sprintf("你可以使用「%s <func><[<arg>]> <content>」来使用这些功能！\n", Bot.Conf.Basic.Key)
-			msg += fmt.Sprintf("例如「%s trans[en] 你好！」或「%s menu」", Bot.Conf.Basic.Key, Bot.Conf.Basic.Key)
+			msg += fmt.Sprintf("🔑「menu 」\n      👉 查看帮助手册；\n")
+			msg += fmt.Sprintf("🔑「whatis <declaration> 」\n      👉 C* 语言类型解释；\n")
+			msg += fmt.Sprintf("🔑「trans[<lang>] <sentence> 」\n      👉 翻译为某种语言；\n")
+			msg += fmt.Sprintf("🔑「trans-help 」\n      👉 查看有哪些语言可以翻译；\n")
+			msg += fmt.Sprintf("🔑「mix <emoji>+<emoji> 」\n      👉 合成两个 emoji；\n")
+			msg += fmt.Sprintf("你可以使用「@我/%s <func><[<arg>]> <content>」来使用这些功能！\n", Bot.Conf.Basic.Key)
+			msg += fmt.Sprintf("例如「%s trans[en] 你好！」或「@IroBot menu」", Bot.Conf.Basic.Key)
+
 			Bot.Manager.Send(OPQBot.SendMsgPack{
 				SendToType: OPQBot.SendToTypeGroup,
 				ToUserUid:  packet.FromGroupID,
@@ -49,10 +56,11 @@ func GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgPack) {
 				},
 			})
 		case "say":
+			// Test only!
 			// TODO: make it simple
-			msg := strings.TrimSpace(strings.TrimPrefix(cmd, "say "))
+			msg := strings.TrimSpace(strings.TrimPrefix(inst.Content, "say "))
 			if packet.FromUserID != Bot.Conf.Basic.MQid {
-				msg = "🥺 不要！"
+				return
 			} else {
 				msg = "🥰 IroBot 也想说 「" + msg + "」"
 			}
@@ -80,11 +88,5 @@ func GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgPack) {
 			emojiHelper.MixEmojiInGroup(&Bot, packet, inst)
 		}
 
-	} else {
-		logrus.Info("A reply.")
-		// Pretreatment
-		_ = reply
-		// Check if the message is a command.
-		logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
 	}
 }

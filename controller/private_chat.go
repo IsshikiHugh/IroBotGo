@@ -12,7 +12,7 @@ func PrivateChatEvents(botId int64, packet *OPQBot.FriendMsgPack) {
 	logrus.Info(fmt.Sprintf("Receive [ %s ] from [ %d ]", packet.Content, packet.FromUin))
 
 	// Pretreatment
-	inst, err := Parse(packet.Content)
+	inst, err := ParseWithPrefix(packet.Content)
 	cmd := inst.Content
 	if err != nil {
 		return

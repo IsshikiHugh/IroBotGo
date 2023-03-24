@@ -48,7 +48,7 @@ func solveTranslator(bot *model.BotEnvironment, bd *model.BotData, inst *model.I
 	srcText := inst.Content
 	resLang := "english"
 	if inst.HasArg {
-		resLang = inst.Args
+		resLang = strings.ReplaceAll(inst.Args, "_", " ")
 	}
 	logrus.Info(inst)
 
@@ -79,6 +79,7 @@ func solveTranslator(bot *model.BotEnvironment, bd *model.BotData, inst *model.I
  */
 func solveTranslatorHelp(bot *model.BotEnvironment, bd *model.BotData, inst *model.Instruction) {
 	ret := listLang()
+	ret = strings.ReplaceAll(ret, " ", "_")
 	ret = strings.ReplaceAll(ret, "\n", ", ")
 	if ret == "" {
 		logrus.Error("Error happens when getting language supported in translator")
