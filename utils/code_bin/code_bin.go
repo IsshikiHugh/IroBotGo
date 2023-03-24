@@ -12,10 +12,16 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
+// This site might already down.
 var binPasteUrl string = "http://pastie.org/pastes/create"
 var binGetUrl string = "http://pastie.org"
 var binDomain string = "pastie.org"
 
+/*
+ * @brief Paste code to code paste bin.
+ * @param pl: The programming language of the code.
+ * @param code: The code to paste.
+ */
 func PasteCode(pl string, code string) (string, error) {
 	forms := url.Values{}
 	forms.Add("language", pl)
@@ -41,6 +47,10 @@ func PasteCode(pl string, code string) (string, error) {
 	return binGetUrl + suffix, nil
 }
 
+/*
+ * @brief Visit code paste bin url and get the screenshot.
+ * @param url: The url of the code.
+ */
 func Preview(url string) ([]byte, error) {
 	var buf []byte
 	ctx, cancel := crawler.NewCtxWithSize(960, 4800)
@@ -58,6 +68,10 @@ func Preview(url string) ([]byte, error) {
 	return buf, nil
 }
 
+/*
+ * @brief Get the screenshot of the code block.
+ * @param buf: The buffer to store the screenshot.
+ */
 func getImg(buf *[]byte) chromedp.ActionFunc {
 	return func(ctx context.Context) (err error) {
 		if err = chromedp.Screenshot(`document.querySelector("section.code")`, buf, chromedp.ByJSPath).Do(ctx); err != nil {

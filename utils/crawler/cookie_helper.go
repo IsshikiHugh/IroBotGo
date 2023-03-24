@@ -9,7 +9,12 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-// Set cookies as a task action
+/*
+ * @brief Set cookies for the browser.
+ * @param domain: The domain of the cookie.
+ * @param name: The name of the cookie.
+ * @param value: The value of the cookie.
+ */
 func SetCookies(domain, name, value string) chromedp.ActionFunc {
 	return func(ctx context.Context) error {
 		expr := cdp.TimeSinceEpoch(time.Now().Add(180 * 24 * time.Hour))

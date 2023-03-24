@@ -8,6 +8,9 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
+/*
+ * @brief Create a new context for the browser.
+ */
 func NewCtx() (context.Context, context.CancelFunc) {
 	ctx, _ := chromedp.NewExecAllocator(
 		context.Background(),
@@ -25,6 +28,9 @@ func NewCtx() (context.Context, context.CancelFunc) {
 	return ctx, cancel
 }
 
+/*
+ * @brief Create a new context for the browser.
+ */
 func NewCtxWithSize(width, height int) (context.Context, context.CancelFunc) {
 	ctx, _ := chromedp.NewExecAllocator(
 		context.Background(),
