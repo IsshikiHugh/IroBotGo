@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"IroBot/units/emojiHelper"
 	"IroBot/units/languageHelper"
 	"IroBot/units/programerHelper"
 	"fmt"
@@ -58,6 +59,9 @@ func GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgPack) {
 		case "trans-help":
 			// List translator support language.
 			languageHelper.TranslatorHelpInGroup(&Bot, packet, inst)
+		case "mix":
+			// Mix emoji!
+			emojiHelper.MixEmojiInGroup(&Bot, packet, inst)
 		}
 
 	} else {

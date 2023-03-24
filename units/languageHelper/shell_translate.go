@@ -146,6 +146,7 @@ func format2text(formatStr string) string {
  * @brief: List the supported language.
  */
 func listLang() string {
+	// You should install it in your terminal.
 	out, err := exec.Command("trans", "-list-languages-english").Output()
 	logrus.Info(string(out))
 	if err != nil {
