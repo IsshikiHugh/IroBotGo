@@ -125,6 +125,7 @@ func trans(srcSentence string, resultLang string) (string, error) {
 		return "", err
 	} else {
 		ret := format2text(string(out))
+		ret = strings.TrimSuffix(ret, "\n")
 		return ret, nil
 	}
 }

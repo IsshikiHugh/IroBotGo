@@ -68,13 +68,3 @@ func GroupChatEvents(botQQ int64, packet *OPQBot.GroupMsgPack) {
 		logrus.Info(fmt.Sprintf("Receive (%s)[ %s ] from [ %d ]", packet.MsgType, packet.Content, packet.FromGroupID))
 	}
 }
-
-// func (bot_ *BotEnvironment) GroupChatEventsRouters(botQQ int64, packet *OPQBot.GroupMsgPack) {
-// 	bot := model.BotEnvironment{
-// 		Manager: bot_.Manager,
-// 		Conf:    bot_.Conf,
-// 	}
-// 	// Ignore message if the sender is the bot.
-// 	if packet.FromUserID == bot.Conf.Basic.Qid {
-// 		return
-// 	}

@@ -55,10 +55,10 @@ func Parse(msg string) (model.Instruction, error) {
 	if cmd == cmdWithArgs {
 		ret.HasArg = false
 	} else {
-		args := strings.TrimPrefix(msg, cmd)
+		args := strings.TrimPrefix(cmdWithArgs, cmd)
 		if strings.HasPrefix(args, "[") && strings.HasSuffix(args, "]") {
 			args = strings.TrimPrefix(args, "[")
-			args = strings.TrimPrefix(args, "]")
+			args = strings.TrimSuffix(args, "]")
 			ret.HasArg = true
 			ret.Args = args
 		} else {
